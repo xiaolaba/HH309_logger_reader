@@ -44,6 +44,15 @@ void delay(int number_of_seconds)
 } 
 
 
+void delay_ms(int milli_seconds) 
+{ 
+    // Storing start time 
+    clock_t start_time = clock(); 
+  
+    // looping till required time is not achieved 
+    while (clock() < start_time + milli_seconds) 
+        ; 
+} 
  
 #include "rs232.h" //wordpress 自動轉換雙引號為 半角符號, 無法解決
 //原因參考以下
@@ -83,8 +92,8 @@ int main()
   while(1)
   {
     RS232_SendByte(com_port_number, 'A');
-    delay(1);    //delay 1 sec
-    
+    delay(3);    //delay 1 sec
+  
     n = RS232_PollComport(com_port_number, buf, 4095);
 
     if(n > 0)
@@ -92,24 +101,57 @@ int main()
 
       buf[n] = 0;   // always put a "null" at the end of a string!
 
+      int byte_vlaue = 0;
+
       for(i=0; i < n; i++)
       {
-        printf("%02x ", buf[i]); // print each byte hex
+        byte_vlaue = buf[i];
+        printf("%02x ", byte_vlaue); // print each byte hex
       }
-      printf("received %i bytes:\n", n);
-/*
+      printf("received %i bytes\n", n);
+
       for(i=0; i < n; i++)
       {
-        if(buf[i] < 32)  // replace unreadable control-codes by dots
+        byte_vlaue = buf[i];
+        if(byte_vlaue < 32 || byte_vlaue > 127)  // replace unreadable control-codes by dots
         {
-          buf[i] = '.';
+          byte_vlaue = '.';
         }
+        printf("%c  ", byte_vlaue); // print each byte as ASCII
       }
+      printf("ascii\n");
 
-      printf("received %i bytes: %s\n", n, (char *)buf);
-*/  
-
+//      printf("received %i bytes: %s\n", n, (char *)buf);
+  
     }
+
+    RS232_SendByte(com_port_number, 'e');
+    delay_ms(500); //must
+    n = RS232_PollComport(com_port_number, buf, 4095);
+    if (n==1)
+    {
+        if (buf[0] == 'r') {
+          printf("earsing HH309 memory... ");
+//          delay_ms(10);
+          RS232_SendByte(com_port_number, 'r');
+          delay_ms(5);  //must
+          RS232_SendByte(com_port_number, 'a');
+          delay_ms(5);  //must
+
+// orignal log, but seems no need
+/*
+          for(i=0; i < 8; i++) 
+          {
+              RS232_SendByte(com_port_number, 0x00);  
+              delay_ms(10);
+          }        
+*/
+          delay(3);    //delay 5 sec
+          printf("when hearing [beep], job done\n");
+
+        }
+    }
+    
   } 
   
   RS232_CloseComport(3);
