@@ -6,6 +6,7 @@ ref: https://github.com/xiaolaba/artisan/blob/master/src/CommCENTER309Python3.py
 command "A", or 0x41, read 45 byte data  
 ![logger_read.JPG](logger_read.JPG)
 
+```
 ##    
 ##    command = "\x4B" returns 4 bytes model number, 309 or 304
 ##    command = "\x41" returns 45 bytes (8x5 + 5 = 45) as follows:
@@ -25,7 +26,7 @@ command "A", or 0x41, read 45 byte data
 ##    "\x0E                               44th byte, Channel_X1_X10, bit3:0=T4-T1, x1 or x10
 ##    "\x03                               45th byte, frame end, 1 byte
 ##    
-
+```
 
 
 
