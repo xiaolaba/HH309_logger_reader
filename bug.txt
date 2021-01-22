@@ -1,0 +1,3 @@
+mingw64, compile warning 
+2019-MAY-31
+warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
